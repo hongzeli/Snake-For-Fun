@@ -13,7 +13,7 @@ import random
 SIZE = (500, 500)                           # (y, x)
 GRID_SIZE = 50                                
 SNAKE_INIT = {0:[4,3], 1:[4,2], 2:[4,1], -1:[]}     
-DIRECTION_INIT = "right"                               # up:1 down:2 left:3 right:4
+DIRECTION_INIT = 4                               # up:1 down:2 left:3 right:4
 
 
 def draw_snake(background, grid, snake_color=[255,128,0], init=False):
@@ -74,21 +74,15 @@ def range_check(head):
 
 def dir_check(snake_list, direction):
     temp = snake_list[0]
+    if direction == 1: temp = [temp[0]-1, temp[1]]          # up
+    elif direction == 2: temp = [temp[0]+1, temp[1]]        # down
+    elif direction == 3: temp = [temp[0], temp[1]-1]        # left
+    else: temp = [temp[0], temp[1]+1]                       # right
     
-    if direction == "up": 
-        temp = [temp[0]-1, temp[1]]     # up
-    elif direction == "down": 
-        temp = [temp[0]+1, temp[1]]     # down
-    elif direction == "left": 
-        temp = [temp[0], temp[1]-1]     # left
+    if temp != snake_list[1]: return range_check(temp)
     else: 
-        temp = [temp[0], temp[1]+1]     # right
-
-    if temp != snake_list[1]: 
-        return range_check(temp)
-    
-    old_dir = direction - (-1)**direction
-    return dir_check(snake_list, old_dir)
+        old_dir = direction - (-1)**direction
+        return dir_check(snake_list, old_dir)
     
         
 def move_snake(snake_list, direction, coin):
@@ -118,11 +112,10 @@ if __name__ == "__main__":
     x_num = SIZE[1]//GRID_SIZE
     snake_list = SNAKE_INIT
     direction = DIRECTION_INIT
-    ROOT = r"/home/jason/Workstation/Snake-For-Fun"
-    coin_icon = cv2.imread(ROOT + r"/images/virus_icon.png",-1)
+    coin_icon = cv2.imread(r"C:\Users\lhzcom\Desktop\Program Park\Snake\images\virus_icon.png",-1)
     coin_icon = cv2.resize(coin_icon, None, fx=(GRID_SIZE-5)/coin_icon.shape[1], 
                            fy=(GRID_SIZE-5)/coin_icon.shape[0],interpolation=cv2.INTER_CUBIC)
-    head_icon = cv2.imread(ROOT + r"/images/head_icon.png",-1)
+    head_icon = cv2.imread(r"C:\Users\lhzcom\Desktop\Program Park\Snake\images\head_icon.png",-1)
     head_icon = cv2.resize(head_icon, None, fx=(GRID_SIZE-5)/head_icon.shape[1], 
                            fy=(GRID_SIZE-5)/head_icon.shape[0],interpolation=cv2.INTER_CUBIC)
     draw_snake(background, GRID_SIZE, init=True)
@@ -130,7 +123,7 @@ if __name__ == "__main__":
     new_coin = False
 
 #    #gaming
-    while(True):
+    while(1):
         cv2.imshow('Snake Go 1.0', background)
         snake_list = move_snake(snake_list, direction, coin)
         if not snake_list: break
@@ -139,15 +132,15 @@ if __name__ == "__main__":
             new_coin = False
         draw_snake(background, GRID_SIZE, init=False)
 #        sleep(1)
-        key = cv2.waitKey(300) & 0xFF  
-        if key in [ord('w'), 82]: direction = "up"
-        elif key in [ord('s'), 84]: direction = "down"
-        elif key in [ord('a'), 81]: direction = "left"
-        elif key in [ord('d'), 83]: direction = "right"
+        key = cv2.waitKey(300) & 0xFF
+        if key == ord('w'): direction = 1
+        elif key == ord('s'): direction = 2
+        elif key == ord('a'): direction = 3
+        elif key == ord('d'): direction = 4
         elif key == 27: break
     
     # gameover
-    go = cv2.imread(ROOT + r"/images/gameover.jpg", -1)
+    go = cv2.imread(r"C:\Users\lhzcom\Desktop\Program Park\Snake\images\gameover.jpg", -1)
     go = cv2.resize(go, None, fx=(SIZE[1]/2)/go.shape[1], fy=(SIZE[1]/2)/go.shape[1], 
                     interpolation=cv2.INTER_CUBIC)
     center = [SIZE[0]//2, SIZE[1]//2]
